@@ -19,16 +19,6 @@ void ringbuf_init(ringbuf_t *buf, char *start, size_t len, ringbuf_error_callbac
 	memset(buf->start, 0, buf->len);
 }
 
-static inline size_t ringbuf_available(ringbuf_t *buf) {
-	/* assumes no buffer overflow has occured */
-	if (buf->rcount > buf->wcount) {
-		buf->wcount += UINT16_MAX - buf->rcount + 1;
-		buf->rcount = 0;
-	}
-
-	return buf->len + buf->rcount - buf->wcount;
-}
-
 void ringbuf_putc(ringbuf_t *buf, char c) {
 	/* check for overflow */
 	if (buf->on_overflow && 0 == ringbuf_available(buf)) {
@@ -37,7 +27,10 @@ void ringbuf_putc(ringbuf_t *buf, char c) {
 
 	/* store */
 	*(buf->writep) = c;
+
+	/* increment counter and pointer */
 	++(buf->wcount);
+	++(buf->writep);
 
 	/* wraparound */
 	if (buf->writep == buf->start+buf->len) buf->writep = buf->start;
@@ -53,9 +46,20 @@ char ringbuf_getc(ringbuf_t *buf) {
 	char c;
 	c = *(buf->readp);
 
-	/* wraparound */
+	/* increment counter and pointer */
 	++(buf->rcount);
+	++(buf->readp);
+
+	/* wraparound */
 	if (buf->readp == buf->start+buf->len) buf->readp = buf->start;
 
 	return c;
+}
+
+void ringbuf_set_overflow_callback(ringbuf_t *buf, ringbuf_error_callback cb) {
+	buf->on_overflow = cb;
+}
+
+void ringbuf_set_underflow_callback(ringbuf_t *buf, ringbuf_error_callback cb) {
+	buf->on_underflow = cb;
 }
