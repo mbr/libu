@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <check.h>
-#include <struct/ringbuf.h>
+#include <libu/struct/ringbuf.h>
 
 /* should be at least 3 */
 static const int ringbuf_size = 128;

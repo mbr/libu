@@ -1,5 +1,5 @@
 #include <string.h>
-#include "struct/ringbuf.h"
+#include <libu/struct/ringbuf.h>
 
 void ringbuf_init(ringbuf_t *buf, char *start, size_t len, ringbuf_error_callback on_overflow, ringbuf_error_callback on_underflow) {
 	/* assign values */
