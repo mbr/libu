@@ -12,7 +12,7 @@ for mmcu in mmcus:
 
 	build_dir = os.path.join('build', mmcu)
 	env.BuildDir(build_dir, 'src')
-	env.StaticLibrary(os.path.join(build_dir, 'libu-%s' % mmcu), env.Glob(os.path.join(build_dir, '*.c')))
+	env.StaticLibrary(os.path.join(build_dir, 'libu'), env.Glob(os.path.join(build_dir, '*.c')))
 
 # compile tests
 testenv = Environment()
