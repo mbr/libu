@@ -19,7 +19,6 @@ for mmcu in mmcus:
 	# build modules
 	for mod in env.Glob(os.path.join(build_dir, module_subdir, '*.c')):
 		name = os.path.splitext(os.path.basename(mod.abspath))[0]
-		print "Module",name
 		env.StaticLibrary(os.path.join(build_dir, 'libu-%s' % name), mod)
 
 # compile tests
