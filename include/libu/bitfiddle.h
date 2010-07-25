@@ -4,7 +4,7 @@
 #define BIT(n) (1 << (n))
 
 #define SET_BITS(var, mask) (var |= (mask))
-#define CLEAR_BITS(var, mask) (var &= (mask))
+#define CLEAR_BITS(var, mask) (var &= ~(mask))
 
 #define SET_BIT(var, n) (SET_BITS(var, BIT(n)))
 #define CLEAR_BIT(var, n) (CLEAR_BITS(var, BIT(n)))
