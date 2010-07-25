@@ -1,23 +1,24 @@
 #include <libu/avr/serial.h>
-#include <string.h>
-#include <avr/io.h>
 
-#include <libu/avr/serial.h>
-#include <inttypes.h>
+void serial0_set_baud_rate(const uint32_t baud_rate) {
+	const uint16_t baud_setting = (uint16_t) (F_CPU/(16*baud_rate) - 1);
 
-void blocking_send(const char *s) {
+	/* set baud rate in registers */
+	UBRR0H = (unsigned char) (baud_setting)>>8;
+	UBRR0L = (unsigned char) (baud_setting);
+};
+
+void serial0_blocking_send(const char *s) {
 	while(*s) {
-		while(!(UCSR0A & (1 << UDRE0)));
-
-		UDR0 = *(s++);	
+		serial0_block_until_ready();
+		serial0_send_byte(*(s++));
 	}
 };
 
-void blocking_send_data(const char *p, size_t len) {
+void serial0_blocking_send_data(const char *s, size_t len) {
 	while(len) {
-		while(!(UCSR0A & (1 << UDRE0)));
-
-		UDR0 = *(p++);	
+		serial0_block_until_ready();
+		serial0_send_byte(*(s++));
 		--len;
 	}
-}
+};
