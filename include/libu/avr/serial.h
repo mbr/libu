@@ -25,5 +25,4 @@ inline static void serial0_block_until_ready() {
 	while(!serial0_ready_to_send());
 }
 
-
 #endif /* SERIAL_H */
