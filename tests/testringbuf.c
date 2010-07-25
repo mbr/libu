@@ -43,7 +43,7 @@ void setup() {
 
 void teardown() {
 	free(data);	
-	free(rb);
+	free((void*)rb); /* ignore volatile */
 	free(pattern);
 }
 

@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 struct _ringbuf_t;
-typedef void (*ringbuf_error_callback)(struct _ringbuf_t *);
+typedef void (*ringbuf_error_callback)(volatile struct _ringbuf_t *);
 
 typedef struct _ringbuf_t {
 	char *start;
@@ -20,7 +20,7 @@ typedef struct _ringbuf_t {
 	ringbuf_error_callback on_overflow;
 	ringbuf_error_callback on_underflow;
 
-} ringbuf_t;
+} volatile ringbuf_t;
 
 
 void ringbuf_init(ringbuf_t *buf, char *start, size_t len, ringbuf_error_callback on_overflow, ringbuf_error_callback on_underflow);
