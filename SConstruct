@@ -7,6 +7,7 @@ mmcus = ['atmega128',
          'atmega328p']
 
 source_dir = 'src'
+module_subdir = 'modules'
 for mmcu in mmcus:
 	env = Environment(tools = ['default', 'avrtools'], AVR_MMCU = mmcu)
 	env.Append(CFLAGS = '-Iinclude')
@@ -14,6 +15,12 @@ for mmcu in mmcus:
 	build_dir = os.path.join('build', mmcu)
 	env.BuildDir(build_dir, source_dir)
 	env.StaticLibrary(os.path.join(build_dir, 'libu'), env.Glob(os.path.join(build_dir, '*.c')))
+
+	# build modules
+	for mod in env.Glob(os.path.join(build_dir, module_subdir, '*.c')):
+		name = os.path.splitext(os.path.basename(mod.abspath))[0]
+		print "Module",name
+		env.StaticLibrary(os.path.join(build_dir, 'libu-%s' % name), mod)
 
 # compile tests
 testenv = Environment()
