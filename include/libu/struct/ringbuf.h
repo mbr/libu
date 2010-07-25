@@ -37,5 +37,8 @@ static inline size_t ringbuf_free_space(ringbuf_t *buf) {
 
 	return buf->len + buf->rcount - buf->wcount;
 }
+static inline size_t ringbuf_available(ringbuf_t *buf) {
+	return buf->len - ringbuf_free_space(buf);
+}
 
 #endif

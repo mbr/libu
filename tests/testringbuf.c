@@ -148,7 +148,7 @@ START_TEST(counter_overflow) {
 }
 END_TEST
 
-START_TEST(availability) {
+START_TEST(free_space) {
 	fail_unless(ringbuf_size == ringbuf_free_space(rb));
 	ringbuf_putc(rb, 'a');
 	ringbuf_getc(rb);
@@ -169,6 +169,23 @@ START_TEST(availability) {
 }
 END_TEST
 
+START_TEST(available) {
+	fail_unless(0 == ringbuf_available(rb));
+	ringbuf_putc(rb, 'a');
+	fail_unless(1 == ringbuf_available(rb));
+	ringbuf_getc(rb);
+	fail_unless(0 == ringbuf_available(rb));
+
+	/* fill almost to capacity */
+	for(int i = 0; i != ringbuf_size; ++i) {
+		ringbuf_putc(rb, pattern[i]);
+		fail_unless(i+1 == ringbuf_available(rb));
+	}
+
+}
+END_TEST
+
+
 TCase *testringbuf() {
 	TCase *tc = tcase_create("testringbuf");
 	tcase_add_test(tc, count_init);
@@ -178,7 +195,8 @@ TCase *testringbuf() {
 	tcase_add_test(tc, overflow_callback_gets_called);
 	tcase_add_test(tc, underflow_callback_gets_called);
 	tcase_add_test(tc, counter_overflow);
-	tcase_add_test(tc, availability);
+	tcase_add_test(tc, free_space);
+	tcase_add_test(tc, available);
 
 	/* try with 1-ringbuf_size elements in buffer */
 	tcase_add_loop_test(tc, put_many_get_many, 1, ringbuf_size+1);
