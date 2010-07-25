@@ -28,7 +28,7 @@ void ringbuf_putc(ringbuf_t *buf, char c);
 char ringbuf_getc(ringbuf_t *buf);
 void ringbuf_set_overflow_callback(ringbuf_t *buf, ringbuf_error_callback cb);
 void ringbuf_set_underflow_callback(ringbuf_t *buf, ringbuf_error_callback cb);
-static inline size_t ringbuf_available(ringbuf_t *buf) {
+static inline size_t ringbuf_free_space(ringbuf_t *buf) {
 	/* assumes no buffer overflow has occured */
 	if (buf->rcount > buf->wcount) {
 		buf->wcount += UINT16_MAX - buf->rcount + 1;

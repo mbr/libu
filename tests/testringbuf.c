@@ -134,38 +134,38 @@ START_TEST(counter_overflow) {
 	ringbuf_putc(rb, 'a');
 	ringbuf_putc(rb, 'a');
 
-	fail_unless(ringbuf_size - 2 == ringbuf_available(rb));
+	fail_unless(ringbuf_size - 2 == ringbuf_free_space(rb));
 	fail_unless(rb->wcount == UINT16_MAX);
 
 	/* now we add one more, capacity should decrease by one */
 	ringbuf_putc(rb, 'a');
-	fail_unless(ringbuf_size - 3 == ringbuf_available(rb));
+	fail_unless(ringbuf_size - 3 == ringbuf_free_space(rb));
 
 	ringbuf_getc(rb);
 	ringbuf_getc(rb);
 	ringbuf_getc(rb);
-	fail_unless(ringbuf_size == ringbuf_available(rb));
+	fail_unless(ringbuf_size == ringbuf_free_space(rb));
 }
 END_TEST
 
 START_TEST(availability) {
-	fail_unless(ringbuf_size == ringbuf_available(rb));
+	fail_unless(ringbuf_size == ringbuf_free_space(rb));
 	ringbuf_putc(rb, 'a');
 	ringbuf_getc(rb);
-	fail_unless(ringbuf_size == ringbuf_available(rb));
+	fail_unless(ringbuf_size == ringbuf_free_space(rb));
 
 	/* fill almost to capacity */
 	for(int i = 0; i != ringbuf_size; ++i) {
 		ringbuf_putc(rb, pattern[i]);
-		fail_unless(ringbuf_size-i-1 == ringbuf_available(rb));
+		fail_unless(ringbuf_size-i-1 == ringbuf_free_space(rb));
 	}
 
 	for(int i = 0; i != ringbuf_size; ++i) {
 		ringbuf_getc(rb);
-		fail_unless(i+1 == ringbuf_available(rb));
+		fail_unless(i+1 == ringbuf_free_space(rb));
 	}
 
-	fail_unless(ringbuf_size == ringbuf_available(rb));
+	fail_unless(ringbuf_size == ringbuf_free_space(rb));
 }
 END_TEST
 

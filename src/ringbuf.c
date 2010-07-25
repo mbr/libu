@@ -21,7 +21,7 @@ void ringbuf_init(ringbuf_t *buf, char *start, size_t len, ringbuf_error_callbac
 
 void ringbuf_putc(ringbuf_t *buf, char c) {
 	/* check for overflow */
-	if (buf->on_overflow && 0 == ringbuf_available(buf)) {
+	if (buf->on_overflow && 0 == ringbuf_free_space(buf)) {
 		(buf->on_overflow)(buf);
 	}
 
@@ -38,7 +38,7 @@ void ringbuf_putc(ringbuf_t *buf, char c) {
 
 char ringbuf_getc(ringbuf_t *buf) {
 	/* check for underflow */
-	if (buf->on_underflow && buf->len == ringbuf_available(buf)) {
+	if (buf->on_underflow && buf->len == ringbuf_free_space(buf)) {
 		(buf->on_underflow)(buf);
 	}
 
