@@ -7,25 +7,17 @@
 
 #include <libu/iomacro.h>
 
-inline static int serial0_ready_to_send() {
-	return UCSR0A & (1 << UDRE0);
-}
+/* setup methods */
+void serial0_set_baud_rate(const uint32_t baud_rate);
 
-inline static void serial0_block_until_ready() {
-	while(!serial0_ready_to_send());
-}
-
-/* inline methods */
-inline static void serial0_putc(char c) {
-	UDR0 = c;
-}
+/* low-level serial i/o */
+inline static void serial0_putc(char c) { UDR0 = c; }
+inline static int serial0_ready_to_send() { return UCSR0A & (1 << UDRE0); }
+inline static void serial0_block_until_ready() { while(!serial0_ready_to_send()); }
 
 /* blocking send functions */
 static inline DEFINE_SEND(serial0);
 DECLARE_SEND_STR(serial0);
 DECLARE_SEND_DATA(serial0);
-
-/* setup methods */
-void serial0_set_baud_rate(const uint32_t baud_rate);
 
 #endif /* SERIAL_H */
