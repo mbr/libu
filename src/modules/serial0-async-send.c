@@ -25,3 +25,6 @@ void serial0_async_send_init(size_t bufsize) {
 	char *buffer = malloc(sizeof(char) * bufsize);
 	ringbuf_init(&_serial0_async_send_sbuf, buffer, bufsize, NULL, NULL);
 }
+
+DEFINE_SEND_STR(serial0_async, serial0_async_putc, );
+DEFINE_SEND_DATA(serial0_async, serial0_async_putc, );

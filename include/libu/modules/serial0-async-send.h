@@ -15,4 +15,9 @@ inline static void serial0_async_putc(char c) {
 
 void serial0_async_send_init(size_t bufsize);
 
+/* I/O functions */
+static inline DEFINE_SEND(serial0_async, serial0_async_putc, );
+DECLARE_SEND_STR(serial0_async);
+DECLARE_SEND_DATA(serial0_async);
+
 #endif /* SERIAL0-ASYNC-SEND_H */
