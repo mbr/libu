@@ -12,6 +12,7 @@ void serial0_set_baud_rate(const uint32_t baud_rate);
 
 /* low-level serial i/o */
 inline static void serial0_putc(char c) { UDR0 = c; }
+inline static char serial0_getc() { return UDR0; }
 inline static int serial0_ready_to_send() { return UCSR0A & (1 << UDRE0); }
 inline static void serial0_block_until_ready() { while(!serial0_ready_to_send()); }
 
