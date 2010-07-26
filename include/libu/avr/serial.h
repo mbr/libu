@@ -20,7 +20,7 @@ inline static void serial0_putc(char c) {
 	UDR0 = c;
 }
 
-/* block, sending a string string */
+/* blocking send functions */
 static inline DEFINE_SEND(serial0);
 DECLARE_SEND_STR(serial0);
 DECLARE_SEND_DATA(serial0);
