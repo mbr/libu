@@ -2,6 +2,7 @@
 #define SERIAL0_ASYNC_SEND_H 
 
 #include <libu/struct/ringbuf.h>
+#include <libu/bitfiddle.h>
 
 extern ringbuf_t _serial0_async_send_sbuf;
 
