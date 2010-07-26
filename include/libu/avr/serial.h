@@ -22,7 +22,7 @@ inline static void serial0_putc(char c) {
 
 /* block, sending a string string */
 DECLARE_SEND_STR(serial0);
-void serial0_blocking_send_data(const char *s, size_t len);
+DECLARE_SEND_DATA(serial0);
 inline static void serial0_blocking_send(const char c) {
 	serial0_block_until_ready();
 	serial0_putc(c);
