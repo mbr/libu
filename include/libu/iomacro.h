@@ -1,6 +1,9 @@
 #ifndef IOMACRO_H
 #define IOMACRO_H 
 
+#define DECLARE_SEND(name) void name##_blocking_send(const char c)
+#define DEFINE_SEND(name) DECLARE_SEND(name) { serial0_block_until_ready(); serial0_putc(c); }
+
 #define DECLARE_SEND_STR(name) void name##_blocking_send_str(const char *s)
 #define DEFINE_SEND_STR(name) DECLARE_SEND_STR(name) { while(*s) { name##_block_until_ready(); name##_putc(*(s++)); } }
 

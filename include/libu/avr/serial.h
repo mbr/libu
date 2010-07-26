@@ -21,12 +21,9 @@ inline static void serial0_putc(char c) {
 }
 
 /* block, sending a string string */
+static inline DEFINE_SEND(serial0);
 DECLARE_SEND_STR(serial0);
 DECLARE_SEND_DATA(serial0);
-inline static void serial0_blocking_send(const char c) {
-	serial0_block_until_ready();
-	serial0_putc(c);
-}
 
 /* setup methods */
 void serial0_set_baud_rate(const uint32_t baud_rate);
