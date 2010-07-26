@@ -5,6 +5,8 @@
 #include <inttypes.h>
 #include <string.h>
 
+#include <libu/iomacro.h>
+
 inline static int serial0_ready_to_send() {
 	return UCSR0A & (1 << UDRE0);
 }
@@ -19,7 +21,7 @@ inline static void serial0_putc(char c) {
 }
 
 /* block, sending a string string */
-void serial0_blocking_send_str(const char *s);
+DECLARE_SEND_STR(serial0);
 void serial0_blocking_send_data(const char *s, size_t len);
 inline static void serial0_blocking_send(const char c) {
 	serial0_block_until_ready();
