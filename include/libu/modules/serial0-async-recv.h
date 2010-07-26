@@ -16,4 +16,8 @@ inline static int serial0_async_recv_available() {
 
 void serial0_async_recv_init(size_t bufsize);
 
+/* allow using a callback (interrupt handler calls it) */
+typedef void (*recv_complete_callback)();
+void serial0_async_recv_callback_on(int nbytes, volatile recv_complete_callback callback);
+
 #endif /* SERIAL0-ASYNC-RECV_H */
