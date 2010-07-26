@@ -13,7 +13,7 @@ SIGNAL(USART_UDRE_vect) {
 	/* interrupts are turned off, and the data register is empty. */
 	if (ringbuf_available(&_serial0_async_send_sbuf)) {
 		/* data available, send */
-		serial0_send_byte(ringbuf_getc(&_serial0_async_send_sbuf));
+		serial0_putc(ringbuf_getc(&_serial0_async_send_sbuf));
 	} else {
 		/* no data available - clear interrupt handler. will
 		 * be set again if more data to send is added. */

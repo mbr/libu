@@ -11,14 +11,14 @@ void serial0_set_baud_rate(const uint32_t baud_rate) {
 void serial0_blocking_send(const char *s) {
 	while(*s) {
 		serial0_block_until_ready();
-		serial0_send_byte(*(s++));
+		serial0_putc(*(s++));
 	}
 };
 
 void serial0_blocking_send_data(const char *s, size_t len) {
 	while(len) {
 		serial0_block_until_ready();
-		serial0_send_byte(*(s++));
+		serial0_putc(*(s++));
 		--len;
 	}
 };

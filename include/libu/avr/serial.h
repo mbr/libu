@@ -13,7 +13,7 @@ void serial0_blocking_send_data(const char *s, size_t len);
 void serial0_set_baud_rate(const uint32_t baud_rate);
 
 /* inline methods */
-inline static void serial0_send_byte(char c) {
+inline static void serial0_putc(char c) {
 	UDR0 = c;
 }
 
