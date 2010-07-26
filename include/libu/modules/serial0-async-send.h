@@ -4,6 +4,8 @@
 #include <libu/struct/ringbuf.h>
 #include <libu/bitfiddle.h>
 
+#include <stdio.h>
+
 extern ringbuf_t _serial0_async_send_sbuf;
 
 inline static void serial0_async_putc(char c) {
@@ -19,5 +21,10 @@ void serial0_async_send_init(size_t bufsize);
 static inline DEFINE_SEND(serial0_async, serial0_async_putc, );
 DECLARE_SEND_STR(serial0_async);
 DECLARE_SEND_DATA(serial0_async);
+
+void serial0_async_safe_send(char c);
+
+/* stdio support */
+FILE *serial0_async_stdout();
 
 #endif /* SERIAL0-ASYNC-SEND_H */

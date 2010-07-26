@@ -26,5 +26,25 @@ void serial0_async_send_init(size_t bufsize) {
 	ringbuf_init(&_serial0_async_send_sbuf, buffer, bufsize, NULL, NULL);
 }
 
+void serial0_async_safe_send(char c) {
+	/* wait until buffer is free */
+	while(! ringbuf_free_space(&_serial0_async_send_sbuf));
+
+	serial0_async_putc(c);
+}
+
 DEFINE_SEND_STR(serial0_async, serial0_async_putc, );
 DEFINE_SEND_DATA(serial0_async, serial0_async_putc, );
+
+/* for stdio. */
+static int _serial0_async_putc(char c, FILE* stream) {
+	serial0_async_safe_send(c);
+
+	return 0;
+}
+
+FILE *serial0_async_stdout() {
+	FILE *f = malloc(sizeof(FILE));
+	fdev_setup_stream(f, _serial0_async_putc, NULL, _FDEV_SETUP_WRITE);
+	return f;
+}
