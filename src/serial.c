@@ -8,7 +8,7 @@ void serial0_set_baud_rate(const uint32_t baud_rate) {
 	UBRR0L = (unsigned char) (baud_setting);
 };
 
-void serial0_blocking_send(const char *s) {
+void serial0_blocking_send_str(const char *s) {
 	while(*s) {
 		serial0_block_until_ready();
 		serial0_putc(*(s++));

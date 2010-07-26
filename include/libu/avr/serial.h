@@ -6,7 +6,7 @@
 #include <string.h>
 
 /* block, sending a string string */
-void serial0_blocking_send(const char *s);
+void serial0_blocking_send_str(const char *s);
 void serial0_blocking_send_data(const char *s, size_t len);
 
 /* setup methods */
