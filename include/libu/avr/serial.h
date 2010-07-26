@@ -17,8 +17,8 @@ inline static int serial0_ready_to_send() { return UCSR0A & (1 << UDRE0); }
 inline static void serial0_block_until_ready() { while(!serial0_ready_to_send()); }
 
 /* blocking send functions */
-static inline DEFINE_SEND(serial0);
-DECLARE_SEND_STR(serial0);
-DECLARE_SEND_DATA(serial0);
+static inline DEFINE_SEND(serial0_blocking, serial0_putc, serial0_block_until_ready());
+DECLARE_SEND_STR(serial0_blocking);
+DECLARE_SEND_DATA(serial0_blocking);
 
 #endif /* SERIAL_H */
