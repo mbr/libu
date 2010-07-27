@@ -2,6 +2,7 @@
 #define ULIB_STRUCT_RINGBUF_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 struct _ringbuf_t;
 typedef void (*ringbuf_error_callback)(volatile struct _ringbuf_t *);
