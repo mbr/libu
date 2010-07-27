@@ -12,6 +12,9 @@
 #define BITS_SET(var, mask) (((var) & (mask)) == (mask))
 #define BITS_CLEARED(var, mask) ((~(var) & (mask)) == (mask))
 
+#define BIT_SET(var, n) (BITS_SET(var, BIT(n)))
+#define BIT_CLEARED(var, n) (BITS_CLEARED(var, BIT(n)))
+
 #define GET_BIT(var, n) ((var) & BIT(n) >> (n))
 
 #endif /* BITFIDDLE_H */
