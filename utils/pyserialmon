@@ -7,26 +7,45 @@ import sys
 import select
 import collections
 import os
+import logging
+import re
 
 import mu
-
-# defaults
-defaults = {
-	'baudrate': 9600
-}
 
 def defhelp(field, text):
 	return "%s (default: %s)" % (text, repr(defaults[field]))
 
-parser = optparse.OptionParser()
-parser.add_option('-b','--baudrate',type=int,default=9600,help=defhelp('baudrate', 'baud rate'))
-parser.add_option('-C','--no-colors',help='disable colors')
-(opts, args) = parser.parse_args()
+def display_color(msg, color):
+	old_color = mu.console.fg_white
+	if not opts.no_colors: sys.stdout.write(color)
+	sys.stdout.write(msg)
+	if not opts.no_colors: sys.stdout.write(old_color)
 
-if len(args) != 1:
-	parser.print_usage()
-	sys.exit(1)
+def display_send(msg):
+	display_color(msg, mu.console.fg_red)
 
+def display_recv(msg):
+	display_color(msg, mu.console.fg_cyan)
+
+tty_pattern = re.compile('tty\d+')
+def serial_name_cmp(a, b):
+	assert(a.startswith('tty'))
+	assert(b.startswith('tty'))
+
+	if 'USB' in a:
+		if 'USB' not in b: return -1
+	elif 'USB' in b: return 1
+
+	if 'S' in a:
+		if 'S' not in b: return -1
+	elif 'S' in b: return 1
+
+	if tty_pattern.match(a) and tty_pattern.match(b):
+		return cmp(int(a[3:]),int(b[3:]))
+
+	return cmp(a,b)
+
+# map escape sequences to letters
 keymap = {
 	'A': 'U',
 	'B': 'D',
@@ -34,13 +53,46 @@ keymap = {
 	'D': 'L',
 }
 
+# setup logging
+mu.logutils.colored_logging(level = logging.DEBUG, simple = True)
+debug = logging.debug
+info = logging.info
+fatal = logging.fatal
+
 # unbuffered stdout
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
+# defaults
+defaults = { 'baudrate': 9600 }
+
+# parse cmdline options
+parser = optparse.OptionParser()
+parser.add_option('-b','--baudrate',type=int,default=9600,help=defhelp('baudrate', 'baud rate'))
+parser.add_option('-C','--no-colors',help='disable colors')
+(opts, args) = parser.parse_args()
+
+# setup
+if len(args) != 1:
+	info('No serial port specified.')
+	con = None
+	for name in sorted([devname for devname in os.listdir('/dev') if devname.startswith('tty')], cmp = serial_name_cmp):
+		info('trying %s',name)
+		try:
+			con = serial.Serial(os.path.join('/dev',name), baudrate = opts.baudrate)
+		except serial.serialutil.SerialException:
+			continue
+		break
+	if not con:
+		fatal('could not open a terminal')
+		sys.exit(1)
+else:
+	con = serial.Serial(args[0], baudrate = opts.baudrate)
+
+debug('opened serial connection on port %s',con.port)
 # open connection
-con = serial.Serial(args[0], baudrate = opts.baudrate)
 sfd = con.fileno()
 
+# run
 with mu.console.RawTTY(sys.stdin, cbreak = True):
 	sendbuf = collections.deque()
 	while True:
@@ -60,14 +112,7 @@ with mu.console.RawTTY(sys.stdin, cbreak = True):
 			else:
 				sendbuf.append(c)
 		if sfd in rlist:
-			if not opts.no_colors:
-				sys.stdout.write(mu.console.fg_cyan)
-			sys.stdout.write(con.read(1))
+			display_recv(con.read(1))
 		if sfd in wlist:
 			con.write(sendbuf[0])
-			if not opts.no_colors:
-				sys.stdout.write(mu.console.fg_red)
-			sys.stdout.write(sendbuf.popleft())
-
-		if not opts.no_colors:
-			sys.stdout.write(mu.console.fg_white)
+			display_send(sendbuf.popleft())
